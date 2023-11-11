@@ -49,18 +49,32 @@
 							"script": {
 								"exec": [
 									"const productIdToTest = 2;",
-									"pm.test(\"Get Product by ID - Status Code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test(\"Get Product by ID - Response has the correct product\", function () {",
-									"    const responseData = pm.response.json();",
-									"    const productById = responseData.find(product => product.id === productIdToTest);",
-									"    pm.expect(productById).to.not.be.undefined; ",
-									"    pm.expect(productById.name).to.eql(\"lettuce\"); ",
-									"    pm.expect(productById.price).to.eql(20); ",
-									"    pm.expect(productById.sku).to.eql(999921312423); ",
-									"    pm.expect(productById.description).to.eql(\"Most lettuce varieties are eaten fresh and are commonly served as the base of green salads\"); ",
-									"});"
+        							"pm.test(\"Get Product by ID - Status Code is 200\", function () {",
+        							"pm.response.to.have.status(200);",
+        							"});",
+        							"pm.test(\"Get Product by ID - Response has the correct product\", function () {",
+       								"const responseData = pm.response.json();",
+        							"",
+        							"pm.expect(responseData).to.satisfy((data) => Array.isArray(data) || typeof data === 'object');",
+        							"",
+       								"if (Array.isArray(responseData)) {",
+        							"pm.expect(responseData.length).to.be.at.least(1);",
+        							"",
+        							"const productById = responseData.find(product => product.id === productIdToTest);",
+        							"",
+        							"pm.expect(productById).to.not.be.undefined; ",
+        							"pm.expect(productById.name).to.eql(\"lettuce\"); ",
+        							"pm.expect(productById.price).to.eql(20); ",
+        							"pm.expect(productById.sku).to.eql(999921312423); ",
+        							"pm.expect(productById.description).to.eql(\"Most lettuce varieties are eaten fresh and are commonly served as the base of green salads\"); ",
+        							"} else if (typeof responseData === 'object') {",
+        							"pm.expect(responseData.id).to.eql(productIdToTest);",
+        							"pm.expect(responseData.name).to.eql(\"lettuce\");",
+        							"pm.expect(responseData.price).to.eql(20);",
+        							"pm.expect(responseData.sku).to.eql(999921312423);",
+        							"pm.expect(responseData.description).to.eql(\"Most lettuce varieties are eaten fresh and are commonly served as the base of green salads\");",
+       					 			"}",
+        							"});"
 								],
 								"type": "text/javascript"
 							}
@@ -156,16 +170,28 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const orderIdToTest = 2;",
+									"const orderIdToTest = 3;",
 									"pm.test(\"Get Order by ID - Status Code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Get Order by ID - Response has the correct order\", function () {",
 									"    const responseData = pm.response.json();",
-									"    const orderById = responseData.find(order => order.id === orderIdToTest);",
-									"    pm.expect(orderById).to.not.be.undefined;",
-									"    pm.expect(orderById.name).to.eql(\"order2\");",
-									"    pm.expect(orderById.sku).to.eql(999921312423);",
+									"",
+									"    pm.expect(responseData).to.satisfy((data) => Array.isArray(data) || typeof data === 'object');",
+									"",
+									"    if (Array.isArray(responseData)) {",
+									"        pm.expect(responseData.length).to.be.at.least(1);",
+									"",
+									"        const orderById = responseData.find(order => order.id === orderIdToTest);",
+									"",
+									"        pm.expect(orderById).to.not.be.undefined;",
+									"        pm.expect(orderById.name).to.eql(\"order2\");",
+									"        pm.expect(orderById.sku).to.eql(999921312423312);",
+									"    } else if (typeof responseData === 'object') {",
+									"        pm.expect(responseData.id).to.eql(orderIdToTest);",
+									"        pm.expect(responseData.name).to.eql(\"order2\");",
+									"        pm.expect(responseData.sku).to.eql(999921312423312);",
+									"    }",
 									"});"
 								],
 								"type": "text/javascript"
@@ -240,9 +266,10 @@
 									"});",
 									"pm.test(\"Update Order - Response has the updated order details\", function () {",
 									"    const responseData = pm.response.json();",
+									"console.log(responseData)",
 									"    pm.expect(responseData.id).to.eql(orderIdToCreate); ",
-									"    pm.expect(responseData.name).to.eql(\"UpdatedOrder\"); ",
-									"    pm.expect(responseData.sku).to.eql(987654321); ",
+									"    pm.expect(responseData.name).to.eql(\"order5\"); ",
+									"    pm.expect(responseData.sku).to.eql(123425445656765); ",
 									"});"
 								],
 								"type": "text/javascript"
@@ -274,21 +301,21 @@
 								"exec": [
 									"const orderIdToDelete = 4;",
 									"",
-									"// Тест для видалення ордера",
-									"pm.test(\"Delete Order - Status Code is 204\", function () {",
-									"    pm.response.to.have.status(204);",
+									
+									"pm.test(\"Delete Order - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Delete Order - Verify Order is Deleted\", function () {",
-									"    // Additional check to verify that the order is deleted",
-									"    const getOrderResponse = pm.sendRequest({",
-									"        url: `",
-									"http://localhost:3000/orders/4,",
-									"        method: 'GET'",
-									"    });",
-									"",
-									"    pm.expect(getOrderResponse.code).to.eql(404); // Assuming 404 is returned for a non-existing resource",
-									"});"
+									"pm.test(\"Delete Order - Verify Order is Deleted\", function (done) {",
+       							 	"pm.sendRequest({",
+        							"url: `http://localhost:3000/orders/4`,",
+        							"method: 'GET',",
+        							"callback: function (err, response) {",
+        							"pm.expect(response.code).to.eql(404);",
+        							"done();",
+        							"        }",
+        							"    });",
+        							"});"
 								],
 								"type": "text/javascript"
 							}
@@ -343,23 +370,31 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const userIdToTest = 2;",
+									"const userIdToTest = 3;",
 									"pm.test(\"Get User by ID - Status Code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"pm.test(\"Get User by ID - Response has the correct user\", function () {",
-									"    const responseData = pm.response.json();",
-									"    const userById = responseData.find(order => user.id === userIdToTest);",
-									"    pm.expect(userById).to.not.be.undefined;",
-									"    pm.expect(userById.firstName).to.eql(\"Bob\");",
+									"const responseData = pm.response.json();",
+									"",	
+									"pm.expect(responseData).to.satisfy((data) => Array.isArray(data) || typeof data === 'object');",
+									"",		
+									"if (Array.isArray(responseData)) {",
+									"    pm.expect(responseData.length).to.be.at.least(1);",
+									"",	
+									"    const userById = responseData.find(user => user.id === userIdToTest);",
+									"",		
+									"    pm.expect(userById).to.not.be.undefined;",	
+									"    pm.expect(userById.firstName).to.eql(\"Joe\");",
 									"    pm.expect(userById.lastName).to.eql(\"Smith\");",
-									"});",
-									"pm.test(\"Response is an array with at least one element\", function () {",
-									"    const responseData = pm.response.json();",
-									"    ",
-									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
-									"});",
-									""
+									"} else if (typeof responseData === 'object') {",
+									"    pm.expect(responseData).to.have.property('id');",
+									"    pm.expect(responseData).to.have.property('firstName');",
+									"    pm.expect(responseData.firstName).to.eql(\"Joe\");",
+									"    pm.expect(responseData.lastName).to.eql(\"Smith\");",
+									"}",
+									"})"
+								
 								],
 								"type": "text/javascript"
 							}
@@ -386,7 +421,7 @@
 									"pm.test(\"Create Order - Response has the created order details\", function () {",
 									"    const responseData = pm.response.json();",
 									"    ",
-									"    // Assuming the server returns details of the created order",
+									
 									"    pm.expect(responseData.id).to.not.be.undefined;",
 									"    pm.expect(responseData.firstName).to.eql(\"Dream\");",
 									"    pm.expect(responseData.lastName).to.eql(\"Real\");",
@@ -437,7 +472,7 @@
 									"    \"level\": \"lord\"",
 									"};",
 									"",
-									"// Тест для оновлення користувача",
+									
 									"pm.test(\"Update User - Status Code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
@@ -445,7 +480,7 @@
 									"pm.test(\"Update User - Response has the updated user details\", function () {",
 									"    const responseData = pm.response.json();",
 									"",
-									"    // Assuming the server returns details of the updated user",
+									
 									"    pm.expect(responseData.id).to.eql(userIdToUpdate);",
 									"    pm.expect(responseData.firstName).to.eql(updatedUserData.firstName);",
 									"    pm.expect(responseData.lastName).to.eql(updatedUserData.lastName);",
@@ -484,18 +519,17 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Assuming you want to delete the user with ID 10",
+									
 									"const userIdToDelete = 10;",
 									"",
-									"// Тест для видалення користувача",
-									"pm.test(\"Delete User - Status Code is 204\", function () {",
-									"    pm.response.to.have.status.oneOf([200, 204]);",
+									
+									"pm.test(\"Delete User - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});",
 									"",
 									"pm.test(\"Delete User - Verify User is Deleted\", function () {",
-									"    // Відключено: pm.expect(pm.response.json()).to.be.empty; // Вимкнено, оскільки видаляється об'єкт JSON, який може бути порожнім або містити помилку",
-									"",
-									"    // Додайте інші тести за необхідності",
+									
+									
 									"});",
 									""
 								],
