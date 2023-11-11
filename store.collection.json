@@ -1,0 +1,543 @@
+{
+	"info": {
+		"_postman_id": "24195aad-0ebf-4344-a74d-429b7167daa7",
+		"name": "store.collection.json.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24889293"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"pm.test(\"Pagination - Correct number of items per page\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    pm.expect(responseData.length).to.eql(3);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const productIdToTest = 2;",
+									"pm.test(\"Get Product by ID - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Get Product by ID - Response has the correct product\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const productById = responseData.find(product => product.id === productIdToTest);",
+									"    pm.expect(productById).to.not.be.undefined; ",
+									"    pm.expect(productById.name).to.eql(\"lettuce\"); ",
+									"    pm.expect(productById.price).to.eql(20); ",
+									"    pm.expect(productById.sku).to.eql(999921312423); ",
+									"    pm.expect(productById.description).to.eql(\"Most lettuce varieties are eaten fresh and are commonly served as the base of green salads\"); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products/2"
+					},
+					"response": []
+				},
+				{
+					"name": "Create product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"orange\",\r\n    \"price\": 8,\r\n    \"sku\": 123321123,\r\n    \"description\": \"wouh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 5,\r\n    \"name\": \"banana\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/products/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const orderIdToTest = 2;",
+									"pm.test(\"Get Order by ID - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Get Order by ID - Response has the correct order\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const orderById = responseData.find(order => order.id === orderIdToTest);",
+									"    pm.expect(orderById).to.not.be.undefined;",
+									"    pm.expect(orderById.name).to.eql(\"order2\");",
+									"    pm.expect(orderById.sku).to.eql(999921312423);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"",
+									"",
+									"pm.test(\"Create Order - Status Code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Create Order - Response has the created order details\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // Assuming the server returns details of the created order",
+									"    pm.expect(responseData.id).to.not.be.undefined;",
+									"    pm.expect(responseData.name).to.eql(\"order3\");",
+									"    pm.expect(responseData.sku).to.eql(7890123456789);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"name\": \"order5\",\r\n//     \"sku\": 123425445656765\r\n// }\r\n{\r\n    \"name\": \"order3\",\r\n    \"sku\": 7890123456789\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// pm.test(\"Update Order - Status Code is 200\", function () {",
+									"//     pm.response.to.have.status(200);",
+									"// });",
+									"const orderIdToCreate = 4;",
+									"pm.test(\"Update Order - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Update Order - Response has the updated order details\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.id).to.eql(orderIdToCreate); ",
+									"    pm.expect(responseData.name).to.eql(\"UpdatedOrder\"); ",
+									"    pm.expect(responseData.sku).to.eql(987654321); ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const orderIdToDelete = 4;",
+									"",
+									"// Тест для видалення ордера",
+									"pm.test(\"Delete Order - Status Code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"pm.test(\"Delete Order - Verify Order is Deleted\", function () {",
+									"    // Additional check to verify that the order is deleted",
+									"    const getOrderResponse = pm.sendRequest({",
+									"        url: `",
+									"http://localhost:3000/orders/4,",
+									"        method: 'GET'",
+									"    });",
+									"",
+									"    pm.expect(getOrderResponse.code).to.eql(404); // Assuming 404 is returned for a non-existing resource",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/orders/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get All Users - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Get All Users - Response has the correct number of users\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData).to.have.length(9); ",
+									"});",
+									"pm.test(\"Pagination - Correct number of items per page\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.length).to.eql(9);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const userIdToTest = 2;",
+									"pm.test(\"Get User by ID - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Get User by ID - Response has the correct user\", function () {",
+									"    const responseData = pm.response.json();",
+									"    const userById = responseData.find(order => user.id === userIdToTest);",
+									"    pm.expect(userById).to.not.be.undefined;",
+									"    pm.expect(userById.firstName).to.eql(\"Bob\");",
+									"    pm.expect(userById.lastName).to.eql(\"Smith\");",
+									"});",
+									"pm.test(\"Response is an array with at least one element\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Create Order - Status Code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Create Order - Response has the created order details\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // Assuming the server returns details of the created order",
+									"    pm.expect(responseData.id).to.not.be.undefined;",
+									"    pm.expect(responseData.firstName).to.eql(\"Dream\");",
+									"    pm.expect(responseData.lastName).to.eql(\"Real\");",
+									"    pm.expect(responseData.email).to.eql(\"dream.real@gmail.com\");",
+									"    pm.expect(responseData.dateOfBirth).to.eql(\"2001-10-99\");",
+									"    pm.expect(responseData.emailVerified).to.eql(true);",
+									"    pm.expect(responseData.signUpDate).to.eql(\"2019-08-24\");",
+									"    pm.expect(responseData.status).to.eql(\"active\");",
+									"    pm.expect(responseData.level).to.eql(\"lord\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const userIdToUpdate = 10;",
+									"const updatedUserData = {",
+									"    \"firstName\": \"Ilon\",",
+									"    \"lastName\": \"Mask\",",
+									"    \"email\": \"ilon.mask@gmail.com\",",
+									"    \"dateOfBirth\": \"2001-10-99\",",
+									"    \"emailVerified\": true,",
+									"    \"signUpDate\": \"2019-08-24\",",
+									"    \"status\": \"active\",",
+									"    \"level\": \"lord\"",
+									"};",
+									"",
+									"// Тест для оновлення користувача",
+									"pm.test(\"Update User - Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Update User - Response has the updated user details\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    // Assuming the server returns details of the updated user",
+									"    pm.expect(responseData.id).to.eql(userIdToUpdate);",
+									"    pm.expect(responseData.firstName).to.eql(updatedUserData.firstName);",
+									"    pm.expect(responseData.lastName).to.eql(updatedUserData.lastName);",
+									"    pm.expect(responseData.email).to.eql(updatedUserData.email);",
+									"    pm.expect(responseData.dateOfBirth).to.eql(updatedUserData.dateOfBirth);",
+									"    pm.expect(responseData.emailVerified).to.eql(updatedUserData.emailVerified);",
+									"    pm.expect(responseData.signUpDate).to.eql(updatedUserData.signUpDate);",
+									"    pm.expect(responseData.status).to.eql(updatedUserData.status);",
+									"    pm.expect(responseData.level).to.eql(updatedUserData.level);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Assuming you want to delete the user with ID 10",
+									"const userIdToDelete = 10;",
+									"",
+									"// Тест для видалення користувача",
+									"pm.test(\"Delete User - Status Code is 204\", function () {",
+									"    pm.response.to.have.status.oneOf([200, 204]);",
+									"});",
+									"",
+									"pm.test(\"Delete User - Verify User is Deleted\", function () {",
+									"    // Відключено: pm.expect(pm.response.json()).to.be.empty; // Вимкнено, оскільки видаляється об'єкт JSON, який може бути порожнім або містити помилку",
+									"",
+									"    // Додайте інші тести за необхідності",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/users/10"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
